@@ -4,7 +4,7 @@ import { useTheme } from '../../context/ThemeContext';
 interface ActivityItem {
   date: string;
   count: number;
-  type?: 'quiz' | 'course'; // Optional: distinguish activity type
+  type?: 'quiz' | 'course'; 
 }
 
 interface ActivityCalendarProps {
