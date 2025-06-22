@@ -29,14 +29,14 @@ const Achievements = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <h1 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+        <h1 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-grayText'}`}>
           Achievements
         </h1>
 
         <div className={`flex items-center space-x-4 px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-sm`}>
           <div className="flex items-center">
             <Award className="text-amber-500 mr-2" size={20} />
-            <span className={`font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+            <span className={`font-medium ${darkMode ? 'text-white' : 'text-grayText'}`}>
               {earnedCount}/{totalCount} Earned
             </span>
           </div>
@@ -62,8 +62,8 @@ const Achievements = () => {
             onClick={() => setActiveTab(category.id)}
             className={`flex items-center px-4 py-2 rounded-md text-sm font-medium m-1 transition-colors
               ${activeTab === category.id
-                ? 'bg-indigo-500 text-white dark:bg-indigo-400 dark:text-gray-900'
-                : 'text-gray-700 dark:text-gray-300 hover:bg-indigo-100 dark:hover:bg-gray-700'
+                ? 'bg-primary text-white dark:bg-primary-dark'
+                : 'text-grayText dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
               }`}
           >
             <span className="mr-2">{category.icon}</span>
