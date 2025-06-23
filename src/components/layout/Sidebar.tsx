@@ -1,12 +1,15 @@
-import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Trophy, BookOpen, User, Settings } from 'lucide-react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, Trophy, BookOpen, User, Settings, LogOut } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useUser } from '../../context/UserContext';
+import { useAuth } from '../../context/AuthContext'; // Add this import
 import Avatar from '../ui/Avatar';
 
 const Sidebar = () => {
   const { darkMode } = useTheme();
   const { user } = useUser();
+  const { signOut } = useAuth(); // Add this
+  const navigate = useNavigate(); // Add this
 
   const navItems = [
     { path: '/', icon: <LayoutDashboard size={20} />, label: 'Dashboard' },
@@ -14,6 +17,12 @@ const Sidebar = () => {
     { path: '/achievements', icon: <Trophy size={20} />, label: 'Achievements' },
     { path: '/profile', icon: <User size={20} />, label: 'Profile' },
   ];
+
+  // Add this function
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/login', { replace: true });
+  };
 
   return (
     <aside
@@ -65,6 +74,14 @@ const Sidebar = () => {
             <Settings size={20} className="mr-3" />
             <span>Settings</span>
           </NavLink>
+          {/* Logout Button */}
+          <button
+            onClick={handleLogout}
+            className="flex items-center w-full mt-2 px-4 py-3 rounded-lg text-sm font-medium transition-colors duration-200 text-gray-600 dark:text-gray-300 hover:bg-red-100 dark:hover:bg-red-900/40"
+          >
+            <LogOut size={20} className="mr-3" />
+            <span>Logout</span>
+          </button>
         </div>
       </div>
     </aside>
