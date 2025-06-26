@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+<<<<<<< HEAD
   darkMode: 'class',
   theme: {
     extend: {
@@ -67,3 +68,10 @@ export default {
   },
   plugins: [],
 };
+=======
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};
+>>>>>>> c0db8ba (Updated front end codes)

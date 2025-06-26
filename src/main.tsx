@@ -7,4 +7,8 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
   </StrictMode>
+<<<<<<< HEAD
 );
+=======
+);
+>>>>>>> c0db8ba (Updated front end codes)
