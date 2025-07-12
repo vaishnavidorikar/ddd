@@ -1,116 +1,121 @@
 import React from 'react';
 import { useTheme } from '../../context/ThemeContext';
 
-interface ActivityItem {
-  date: string;
-  count: number;
-  type?: 'quiz' | 'course'; 
-}
-
 interface ActivityCalendarProps {
-  activityData: ActivityItem[];
+  activityData: Array<{
+    date: string;
+    count: number;
+  }>;
 }
 
 const ActivityCalendar: React.FC<ActivityCalendarProps> = ({ activityData }) => {
   const { darkMode } = useTheme();
-
+  
+  // Group by week
   const weeks = [];
-  const weekCount = 12;
+  const weekCount = 12; // Last 12 weeks
   const cellsPerWeek = 7;
-  const today = new Date();
-
+  
+  // Find max count for intensity calculation
   const maxCount = Math.max(...activityData.map(d => d.count));
-
+  
+  // Process activity data into week format
+  const today = new Date();
   const calendar = Array(weekCount * cellsPerWeek).fill(null).map((_, index) => {
+    // Calculate date for this cell (going backwards from today)
     const date = new Date(today);
     date.setDate(today.getDate() - ((weekCount * cellsPerWeek) - index - 1));
+    
+    // Format date as string for lookup
     const dateStr = date.toISOString().split('T')[0];
-
+    
+    // Find matching activity data
     const activity = activityData.find(d => d.date === dateStr);
-
+    
     return {
       date: dateStr,
-      count: activity?.count ?? 0,
-      type: activity?.type ?? 'course',
-      dayOfWeek: date.getDay()
+      count: activity ? activity.count : 0,
+      dayOfWeek: date.getDay(), // 0 = Sunday, 6 = Saturday
+      dayName: date.toLocaleDateString('en-US', { weekday: 'short' })
     };
   });
-
+  
+  // Group by week
   for (let i = 0; i < weekCount; i++) {
     weeks.push(calendar.slice(i * cellsPerWeek, (i + 1) * cellsPerWeek));
   }
-
-  const getIntensityColor = (count: number, type: string) => {
+  
+  // Get intensity color
+  const getIntensityColor = (count: number) => {
     if (count === 0) return darkMode ? '#374151' : '#f3f4f6';
-
-    const intensity = Math.ceil((count / maxCount) * 4);
-
+    
+    const intensity = Math.ceil((count / Math.max(maxCount, 1)) * 4);
+    
     if (darkMode) {
-      if (type === 'quiz') {
-        return ['#4b5563', '#16a34a', '#15803d', '#166534', '#14532d'][intensity];
-      } else {
-        return ['#4b5563', '#3b82f6', '#2563eb', '#1d4ed8', '#1e40af'][intensity];
-      }
+      if (intensity === 1) return '#4f46e5';
+      if (intensity === 2) return '#4338ca';
+      if (intensity === 3) return '#3730a3';
+      return '#312e81';
     } else {
-      if (type === 'quiz') {
-        return ['#e5e7eb', '#bbf7d0', '#86efac', '#4ade80', '#22c55e'][intensity];
-      } else {
-        return ['#e5e7eb', '#bfdbfe', '#93c5fd', '#60a5fa', '#3b82f6'][intensity];
-      }
+      if (intensity === 1) return '#e0e7ff';
+      if (intensity === 2) return '#c7d2fe';
+      if (intensity === 3) return '#a5b4fc';
+      return '#6366f1';
     }
   };
 
+  // Get day labels for the first week
+  const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  
   return (
     <div className="flex flex-col">
       <div className="flex justify-between mb-2 text-xs text-gray-500 dark:text-gray-400">
         <span>12 weeks ago</span>
         <span>Today</span>
       </div>
-
+      
       <div className="flex">
         <div className="mr-2 flex flex-col justify-between h-32 text-xs text-gray-500 dark:text-gray-400">
-          <span>Sun</span>
-          <span>Tue</span>
-          <span>Thu</span>
-          <span>Sat</span>
+          {dayLabels.map((day, index) => (
+            <span key={index} className={index % 2 === 0 ? '' : 'opacity-0'}>
+              {day}
+            </span>
+          ))}
         </div>
-
+        
         <div className="flex-1 grid grid-cols-12 gap-1">
           {weeks.map((week, weekIndex) => (
             <div key={weekIndex} className="flex flex-col gap-1">
-              {week.map((day, dayIndex) => (
-                <div
-                  key={`${weekIndex}-${dayIndex}`}
-                  className="w-4 h-4 rounded-sm"
-                  style={{ backgroundColor: getIntensityColor(day.count, day.type) }}
-                  title={`${day.date}: ${day.count} ${day.type === 'quiz' ? 'quizzes attempted' : 'lessons completed'}`}
-                />
-              ))}
+              {week.map((day, dayIndex) => {
+                const actualDate = new Date(day.date);
+                const dayOfWeek = actualDate.getDay(); // 0 = Sunday, 1 = Monday, etc.
+                const displayDay = dayLabels[dayOfWeek];
+                
+                return (
+                  <div 
+                    key={`${weekIndex}-${dayIndex}`}
+                    className="w-4 h-4 rounded-sm cursor-pointer hover:ring-2 hover:ring-indigo-300 dark:hover:ring-indigo-600 transition-all"
+                    style={{ backgroundColor: getIntensityColor(day.count) }}
+                    title={`${displayDay}, ${actualDate.toLocaleDateString()}: ${day.count} activities`}
+                  ></div>
+                );
+              })}
             </div>
           ))}
         </div>
       </div>
-
-      <div className="mt-4 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 dark:text-gray-400 gap-2">
-        <div className="flex items-center">
-          <span className="mr-1">Course</span>
-          {[0, 1, 2, 3, 4].map(i => (
-            <div
-              key={i}
+      
+      <div className="mt-4 flex items-center justify-end">
+        <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
+          <span className="mr-1">Less</span>
+          {[0, 1, 2, 3, 4].map(intensity => (
+            <div 
+              key={intensity}
               className="w-3 h-3 mx-0.5 rounded-sm"
-              style={{ backgroundColor: getIntensityColor(i === 0 ? 0 : (i * maxCount) / 4, 'course') }}
-            />
+              style={{ backgroundColor: getIntensityColor(intensity === 0 ? 0 : Math.ceil((intensity * Math.max(maxCount, 1)) / 4)) }}
+            ></div>
           ))}
-        </div>
-        <div className="flex items-center">
-          <span className="mr-1">Quiz</span>
-          {[0, 1, 2, 3, 4].map(i => (
-            <div
-              key={i}
-              className="w-3 h-3 mx-0.5 rounded-sm"
-              style={{ backgroundColor: getIntensityColor(i === 0 ? 0 : (i * maxCount) / 4, 'quiz') }}
-            />
-          ))}
+          <span className="ml-1">More</span>
         </div>
       </div>
     </div>
