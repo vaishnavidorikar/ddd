@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, BookOpen, ArrowRight, Clock } from 'lucide-react';
+import { MapPin, BookOpen, Award, ArrowRight } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 
 interface LearningPathCardProps {
@@ -13,15 +13,15 @@ interface LearningPathCardProps {
     difficulty: string;
     estimatedTime: string;
   };
-  onViewPath: (pathId: number) => void;
 }
 
-const LearningPathCard: React.FC<LearningPathCardProps> = ({ path, onViewPath }) => {
+const LearningPathCard: React.FC<LearningPathCardProps> = ({ path }) => {
   const { darkMode } = useTheme();
+  
   const progress = Math.round((path.completedCourses / path.totalCourses) * 100);
-
+  
   return (
-    <div className={`rounded-xl overflow-hidden shadow-sm ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-all duration-300 hover:shadow-md hover:scale-[1.02]`}>
+    <div className={`rounded-xl overflow-hidden shadow-sm ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-all duration-300 hover:shadow-md hover:transform hover:scale-105`}>
       <div className="h-40 relative">
         <img 
           src={path.thumbnail} 
@@ -33,19 +33,19 @@ const LearningPathCard: React.FC<LearningPathCardProps> = ({ path, onViewPath })
           {path.difficulty}
         </div>
       </div>
-
+      
       <div className="p-4">
         <div className="flex items-center mb-2">
           <MapPin className="text-indigo-500 mr-2" size={16} />
-          <h3 className={`font-medium text-base ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+          <h3 className={`font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
             {path.title}
           </h3>
         </div>
-
+        
         <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-3">
           {path.description}
         </p>
-
+        
         <div className="grid grid-cols-2 gap-2 mb-3">
           <div className={`p-2 rounded-md ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
             <div className="flex items-center">
@@ -58,7 +58,7 @@ const LearningPathCard: React.FC<LearningPathCardProps> = ({ path, onViewPath })
               </div>
             </div>
           </div>
-
+          
           <div className={`p-2 rounded-md ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
             <div className="flex items-center">
               <Clock className="text-indigo-500 mr-2" size={14} />
@@ -71,25 +71,24 @@ const LearningPathCard: React.FC<LearningPathCardProps> = ({ path, onViewPath })
             </div>
           </div>
         </div>
-
+        
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs text-gray-500 dark:text-gray-400">Progress</span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            Progress
+          </span>
           <span className={`text-xs font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
             {path.completedCourses}/{path.totalCourses}
           </span>
         </div>
-
-        <div className="w-full h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden mb-4">
+        
+        <div className="w-full h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
           <div 
-            className="h-full bg-indigo-500 transition-all duration-500" 
+            className="h-full bg-indigo-500" 
             style={{ width: `${progress}%` }}
           ></div>
         </div>
-
-        <button
-          onClick={() => onViewPath(path.id)}
-          className="w-full flex items-center justify-between px-4 py-2 border border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400 font-medium rounded-md hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
-        >
+        
+        <button className="mt-4 w-full flex items-center justify-between px-4 py-2 border border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400 font-medium rounded-md hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors">
           <span>View Path</span>
           <ArrowRight size={16} />
         </button>
@@ -99,3 +98,5 @@ const LearningPathCard: React.FC<LearningPathCardProps> = ({ path, onViewPath })
 };
 
 export default LearningPathCard;
+
+import { Clock } from 'lucide-react';

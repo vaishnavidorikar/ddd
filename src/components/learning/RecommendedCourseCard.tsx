@@ -1,7 +1,6 @@
 import React from 'react';
 import { Star, BookOpen, Clock, Users } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
-import { useNavigate } from 'react-router-dom';
 
 interface RecommendedCourseCardProps {
   course: {
@@ -14,26 +13,12 @@ interface RecommendedCourseCardProps {
     estimatedTime: string;
     students: number;
     level: string;
-    previewVideoUrl: string;
-    description: string;
   };
 }
 
 const RecommendedCourseCard: React.FC<RecommendedCourseCardProps> = ({ course }) => {
   const { darkMode } = useTheme();
-  const navigate = useNavigate();
-
-  const handlePreviewClick = () => {
-    // Redirect to preview page or video player with course ID
-    navigate(`/course-preview/${course.id}`, {
-      state: { 
-        videoUrl: course.previewVideoUrl,
-        title: course.title,
-        description: course.description
-      }
-    });
-  };
-
+  
   return (
     <div className={`rounded-xl overflow-hidden shadow-sm ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-all duration-300 hover:shadow-md hover:transform hover:scale-105`}>
       <div className="h-40 relative">
@@ -79,10 +64,7 @@ const RecommendedCourseCard: React.FC<RecommendedCourseCardProps> = ({ course })
             <span>{course.students.toLocaleString()} students</span>
           </div>
           
-          <button 
-            className="px-3 py-1 bg-indigo-100 hover:bg-indigo-200 dark:bg-indigo-900/40 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 text-sm font-medium rounded-md transition-colors"
-            onClick={handlePreviewClick}
-          >
+          <button className="px-3 py-1 bg-indigo-100 hover:bg-indigo-200 dark:bg-indigo-900/40 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 text-sm font-medium rounded-md transition-colors">
             Preview
           </button>
         </div>
